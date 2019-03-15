@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+
+  nginx:
+    build ./nginx/build
+    networks:
+      - rancher
+    depends_on:
+      - rancher
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+
+  rancher:
+    image: rancher/server
+    networks:
+      - rancher
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      - db-host=mysql
+      - db-port=3306
+      - db-user=cattle
+      - db-pass=mjrDDPSfrDVV37iSQpfV
+      - db-name=cattle
+
+  mysql:
+    build mysql:5.6
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 4mnK5Hlz4ybXqsM99vr4
+    volumes:
+      - ./mysql/data/:/var/lib/mysql
